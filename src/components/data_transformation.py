@@ -9,7 +9,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.exception import CustomException
 from src.logger import logging
 import os
-import pickle
+from src.utils import save_object
 
 @dataclass
 class DataTransformationConfig:
@@ -79,11 +79,11 @@ class DataTransformation:
             test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
 
             logging.info(f"Saving preprocessor object")
-            os.makedirs(os.path.dirname(self.data_transformation_config.preprocessor_obj_file_path), exist_ok=True)
-            with open(self.data_transformation_config.preprocessor_obj_file_path, 'wb') as f:
-                pickle.dump(preprocessor_obj, f)
+            save_object(
+                file_path=self.data_transformation_config.preprocessor_obj_file_path,
+                obj=preprocessor_obj
+            )
 
-            logging.info(f"Data transformation completed successfully")
             return (train_arr, test_arr, self.data_transformation_config.preprocessor_obj_file_path)
 
         except Exception as e:
